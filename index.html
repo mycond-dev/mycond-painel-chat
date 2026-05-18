@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>MYIA Síndicos</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -451,7 +451,7 @@ body{
       </div>
     </div>
 
-    <!-- Despesas + Ocorrências -->
+    <!-- Despesas + Manutenções -->
     <div style="display:flex;flex-direction:column;gap:12px">
       <div class="card">
         <div class="cp" style="padding-bottom:6px"><div class="ctitle">Despesas a aprovar</div></div>
@@ -467,22 +467,68 @@ body{
         <div style="display:flex;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--line)"><span style="font-size:11px;color:var(--ink3)">6 despesas</span><span style="font-size:14px;font-weight:700">R$7.4k</span></div>
       </div>
 
+      <!-- MANUTENÇÕES PRÓXIMAS com pizza por condomínio -->
       <div class="card">
-        <div class="cp" style="padding-bottom:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="ctitle" style="margin:0">Ocorrências</div><span class="tag tr">2 abertas</span></div></div>
-        <div class="oc" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'))">
-          <div class="cdot" style="margin-top:4px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
-          <div style="flex:1;margin-left:8px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span class="oc-num">703</span><span class="tag tr">2ª · multa</span></div>
-            <div style="font-size:13px;color:var(--ink2)">Barulho após 22h · Ed. Aurora</div>
-            <div style="font-size:11px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:4px"><i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i>Toque para ver notificação</div>
+        <div class="cp" style="padding-bottom:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div class="ctitle" style="margin:0">Manutenções</div>
+            <button class="btn bs" onclick="nav('manut',document.querySelector('[data-tab=manut]'))" style="font-size:11px">Ver todas →</button>
+          </div>
+          <!-- Pizza SVG — 30 manutenções distribuídas por condomínio -->
+          <!-- Mar Azul(c1)=9 → 108°, Parque Verde(c2)=7 → 84°, Aurora(c3)=6 → 72°, Panamby(c4)=5 → 60°, Garibaldi(c5)=3 → 36° -->
+          <div style="display:flex;align-items:center;gap:14px">
+            <svg width="88" height="88" viewBox="0 0 88 88" style="flex-shrink:0" aria-label="Pizza manutenções por condomínio">
+              <!-- Mar Azul: 9/30 = 108° — de -90° a 18° -->
+              <path d="M44,44 L44,4 A40,40 0 0,1 82,56.4 Z" fill="var(--c1)"/>
+              <!-- Parque Verde: 7/30 = 84° — de 18° a 102° -->
+              <path d="M44,44 L82,56.4 A40,40 0 0,1 35.6,83.2 Z" fill="var(--c2)"/>
+              <!-- Aurora: 6/30 = 72° — de 102° a 174° -->
+              <path d="M44,44 L35.6,83.2 A40,40 0 0,1 4.7,37.2 Z" fill="var(--c3)"/>
+              <!-- Panamby: 5/30 = 60° — de 174° a 234° -->
+              <path d="M44,44 L4.7,37.2 A40,40 0 0,1 21.3,10.3 Z" fill="var(--c4)"/>
+              <!-- Garibaldi: 3/30 = 36° — de 234° a 270° -->
+              <path d="M44,44 L21.3,10.3 A40,40 0 0,1 44,4 Z" fill="var(--c5)"/>
+              <!-- Centro -->
+              <circle cx="44" cy="44" r="24" fill="var(--s1)"/>
+              <text x="44" y="40" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)" font-family="sans-serif">30</text>
+              <text x="44" y="54" text-anchor="middle" font-size="9" fill="var(--ink3)" font-family="sans-serif">agendadas</text>
+            </svg>
+            <!-- Legenda com urgência -->
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)">
+                <div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Mar Azul</span></div>
+                <span style="font-size:12px;font-weight:600;color:var(--ink)">9 · <span style="color:var(--warn);font-size:11px">1 urgente</span></span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)">
+                <div class="cdot"><div class="cdot-d" style="background:var(--c2)"></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Parque Verde</span></div>
+                <span style="font-size:12px;font-weight:600;color:var(--ink)">7</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)">
+                <div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Aurora</span></div>
+                <span style="font-size:12px;font-weight:600;color:var(--ink)">6</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)">
+                <div class="cdot"><div class="cdot-d" style="background:var(--c4)"></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Cond. Panamby</span></div>
+                <span style="font-size:12px;font-weight:600;color:var(--ink)">5</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+                <div class="cdot"><div class="cdot-d" style="background:var(--c5)"></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Garibaldi</span></div>
+                <span style="font-size:12px;font-weight:600;color:var(--ink)">3</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="oc" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'))" style="border-bottom:none">
-          <div class="cdot" style="margin-top:4px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
-          <div style="flex:1;margin-left:8px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span class="oc-num">304</span><span class="tag ta">1ª · advertência</span></div>
-            <div style="font-size:13px;color:var(--ink2)">Animal sem coleira · Ed. Aurora</div>
-            <div style="font-size:11px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:4px"><i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i>Toque para ver notificação</div>
+        <!-- Próximas urgentes -->
+        <div style="border-top:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer" onclick="nav('manut',document.querySelector('[data-tab=manut]'))" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+            <div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div></div>
+            <div style="flex:1;margin-left:6px"><div style="font-size:13px;font-weight:500;color:var(--ink)">Dedetização</div><div style="font-size:11px;color:var(--ink3)">Ed. Aurora · mensal</div></div>
+            <span class="tag ta">4 dias</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" onclick="nav('manut',document.querySelector('[data-tab=manut]'))" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''">
+            <div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div></div>
+            <div style="flex:1;margin-left:6px"><div style="font-size:13px;font-weight:500;color:var(--ink)">Inspeção elevador</div><div style="font-size:11px;color:var(--ink3)">Ed. Mar Azul · bimestral</div></div>
+            <span class="tag tb">12 dias</span>
           </div>
         </div>
       </div>

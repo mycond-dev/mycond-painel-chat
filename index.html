@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>MYIA Síndicos</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  background:#F5F5F3;color:#0F0F0F;font-size:15px;line-height:1.5;
+  position:fixed;width:100%;
+}
+:root{
+  --ink:#0F0F0F;--ink2:#555;--ink3:#888;--ink4:#BBB;
+  --bg:#F5F5F3;--s1:#fff;--line:#E8E8E6;
+  --c1:#2563EB;--c2:#D97706;--c3:#059669;--c4:#7C3AED;--c5:#DC2626;
+  --ok:#059669;--warn:#D97706;--err:#DC2626;--myia:#5B21B6;
+  --nav:60px;--rail:52px;
+  --r:10px;--rl:14px;
+}
+
+/* ── APP SHELL ─────────────────────────────────── */
+.app{display:flex;height:100%;overflow:hidden}
+
+/* ── DESKTOP RAIL ──────────────────────────────── */
+.rail{
+  width:var(--rail);background:var(--s1);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 0;gap:2px;flex-shrink:0;
+}
+.brand{
+  width:28px;height:28px;background:var(--ink);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;text-decoration:none;flex-shrink:0;
+}
+.brand span{font-size:12px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.ri{
+  position:relative;width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--ink4);font-size:20px;
+  transition:background .12s,color .12s;text-decoration:none;
+}
+.ri:hover,.ri.on{background:var(--bg);color:var(--ink)}
+.ri.on::before{
+  content:'';position:absolute;left:-1px;top:30%;bottom:30%;
+  width:2px;background:var(--ink);border-radius:0 2px 2px 0;
+}
+.ri .tt{
+  position:absolute;left:calc(100%+10px);top:50%;
+  transform:translateY(-50%);
+  background:var(--ink);color:#fff;
+  font-size:12px;font-weight:500;padding:5px 10px;border-radius:6px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .12s;z-index:999;
+}
+.ri:hover .tt{opacity:1}
+.badge{
+  position:absolute;top:3px;right:3px;
+  min-width:16px;height:16px;
+  background:var(--err);color:#fff;
+  font-size:9px;font-weight:700;
+  border-radius:8px;padding:0 3px;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--s1);line-height:1;
+}
+.rsep{width:24px;height:1px;background:var(--line);margin:4px 0}
+
+/* ── MAIN ───────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{
+  height:48px;display:flex;align-items:center;gap:12px;
+  padding:0 16px;border-bottom:1px solid var(--line);
+  background:var(--s1);flex-shrink:0;
+}
+.tb-title{font-size:15px;font-weight:600;flex:1}
+.tb-sub{font-size:12px;color:var(--ink3)}
+.av{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--ink);color:#fff;font-size:10px;
+  font-weight:700;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;cursor:pointer;
+}
+
+/* ── VIEWS ──────────────────────────────────────── */
+.view{display:none;flex:1;overflow-y:auto;overflow-x:hidden}
+.view.on{display:block}
+.vflex{display:none;flex:1;overflow:hidden}
+.vflex.on{display:flex}
+.vpad{padding:14px 16px}
+
+/* ── CARDS ──────────────────────────────────────── */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
+.cp{padding:14px 16px}
+.ctitle{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:var(--r);
+  border:1px solid var(--line);background:var(--s1);
+  color:var(--ink);cursor:pointer;font-family:inherit;
+  transition:background .1s;white-space:nowrap;
+  min-height:44px;
+}
+.btn:hover{background:var(--bg)}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bp:hover{background:#333}
+.bm{background:var(--myia);color:#fff;border-color:var(--myia)}
+.bm:hover{background:#4c1d95}
+.bs{font-size:12px;padding:6px 12px;min-height:36px}
+
+/* ── FORM ───────────────────────────────────────── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:var(--r);
+  padding:10px 13px;font-size:14px;font-family:inherit;
+  color:var(--ink);background:var(--s1);outline:none;
+  transition:border-color .15s;min-height:44px;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+/* ── TAGS ───────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;white-space:nowrap}
+.tr{background:#FEF2F2;color:#991B1B}
+.ta{background:#FFFBEB;color:#78350F}
+.tg{background:#F0FDF4;color:#14532D}
+.tb{background:#EFF6FF;color:#1E3A8A}
+.tn{background:var(--bg);color:var(--ink3)}
+
+/* ── MYIA BLOCK ─────────────────────────────────── */
+.myia-b{
+  background:#F5F3FF;border:1px solid #DDD6FE;
+  border-radius:var(--r);padding:12px 14px;margin-top:10px;
+}
+.myia-h{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.myia-ic{width:22px;height:22px;border-radius:6px;background:var(--myia);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.myia-ic i{font-size:12px;color:#fff}
+.myia-lbl{font-size:11px;font-weight:700;color:var(--myia)}
+.myia-txt{font-size:13px;color:#3730A3;line-height:1.55;margin-bottom:10px}
+.myia-acts{display:flex;gap:7px;flex-wrap:wrap}
+
+/* ── TOAST ──────────────────────────────────────── */
+.toasts{position:fixed;top:56px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:var(--ink);color:#fff;font-size:13px;font-weight:500;
+  padding:10px 14px;border-radius:var(--r);
+  display:flex;align-items:center;gap:8px;
+  pointer-events:auto;animation:tin .22s ease;
+}
+.tok{background:#065F46}.terr{background:#991B1B}
+@keyframes tin{from{transform:translateX(16px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── LIST ROWS ──────────────────────────────────── */
+.row{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);transition:background .1s}
+.row:last-child{border-bottom:none}
+.row.click{cursor:pointer}
+.row.click:hover{background:var(--bg)}
+.row.click:active{background:#EDEDEB}
+.av-s{width:36px;height:36px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── PAINEL GRID ─────────────────────────────────── */
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pg3{display:grid;grid-template-columns:3fr 2fr;gap:12px}
+
+/* ── STAT ───────────────────────────────────────── */
+.stat{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;cursor:pointer;transition:box-shadow .15s}
+.stat:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stat-lbl{font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.06em;margin-bottom:6px}
+.stat-val{font-size:26px;font-weight:700;letter-spacing:-1px;line-height:1}
+.stat-sub{font-size:11px;color:var(--ink3);margin-top:5px}
+.prog{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:7px}
+.prog-f{height:100%;border-radius:3px}
+
+/* ── AGENDA ─────────────────────────────────────── */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dh{font-size:9px;font-weight:700;color:var(--ink3);text-align:center;padding-bottom:4px;border-bottom:1px solid var(--line);margin-bottom:4px;letter-spacing:.04em}
+.dh.tod{color:var(--ink);border-bottom:2px solid var(--ink)}
+.dn{font-size:12px;font-weight:600;color:var(--ink3);text-align:center;margin-bottom:4px}
+.dn.tnow{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
+.ev{border-radius:4px;padding:3px 5px;font-size:9px;line-height:1.3;cursor:pointer;margin-bottom:2px;transition:opacity .12s;display:flex;align-items:center;gap:2px}
+.ev.done{opacity:.4}
+.ev.done::before{content:'✓';font-size:8px;color:var(--ok);font-weight:700}
+
+/* ── TASKS ──────────────────────────────────────── */
+.task{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s}
+.task:last-child{border-bottom:none}
+.task:hover{background:var(--bg)}
+.task:active{background:#EDEDEB}
+.chk{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--line);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.chk.ok{background:var(--ok);border-color:var(--ok)}
+.task.done .task-t{text-decoration:line-through;color:var(--ink3)}
+.task.done{opacity:.5}
+
+/* ── WA ─────────────────────────────────────────── */
+.wa3{display:grid;grid-template-columns:180px 1fr 210px;height:100%;overflow:hidden}
+.wa-list{border-right:1px solid var(--line);overflow-y:auto;background:var(--s1)}
+.wc{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s}
+.wc:hover{background:var(--bg)}
+.wc.on{background:#EFF6FF}
+.wc-av{width:36px;height:36px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wc-info{flex:1;min-width:0}
+.wc-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc-cond{font-size:11px;color:var(--ink3)}
+.wc-prev{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.wc-time{font-size:10px;color:var(--ink3);flex-shrink:0;margin-top:3px}
+.wchat{display:flex;flex-direction:column;overflow:hidden}
+.wch{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--s1)}
+.wmsgs{flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;background:#F8F9FA}
+.bin{align-self:flex-start;background:var(--s1);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:9px 13px;max-width:75%;font-size:14px;color:var(--ink);line-height:1.5}
+.bout{align-self:flex-end;background:var(--ink);border-radius:14px 14px 4px 14px;padding:9px 13px;max-width:75%;font-size:14px;color:#fff;line-height:1.5}
+.wfoot{border-top:1px solid var(--line);flex-shrink:0;background:var(--s1)}
+.wsug{padding:10px 14px;background:#F5F3FF}
+.winrow{display:flex;gap:8px;padding:10px 14px}
+.win{flex:1;border:1px solid var(--line);border-radius:22px;padding:9px 14px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--s1);outline:none;min-height:44px}
+.win:focus{border-color:var(--ink)}
+.wsend{width:40px;height:40px;border-radius:50%;background:var(--ink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wsend i{font-size:18px;color:#fff}
+.wpanel{border-left:1px solid var(--line);overflow-y:auto;padding:16px 14px;background:var(--s1)}
+.wpr-name{font-size:16px;font-weight:700;margin-bottom:2px}
+.wpr-sub{font-size:12px;color:var(--ink3);margin-bottom:14px}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.irow:last-child{border-bottom:none}
+.il{color:var(--ink3)}
+
+/* ── MANUT ──────────────────────────────────────── */
+.manut-r{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.manut-r:last-child{border-bottom:none}
+.manut-ic{width:38px;height:38px;border-radius:var(--r);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.manut-ic i{font-size:20px;color:var(--ink3)}
+
+/* ── OCORR ──────────────────────────────────────── */
+.oc{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .1s}
+.oc:last-child{border-bottom:none}
+.oc:hover{background:var(--bg)}
+.oc-num{font-size:24px;font-weight:800;line-height:1}
+
+/* ── CFG ────────────────────────────────────────── */
+.cfg-ly{display:grid;grid-template-columns:160px 1fr;height:100%;overflow:hidden}
+.cfg-menu{border-right:1px solid var(--line);overflow-y:auto;background:var(--s1);padding:8px 0}
+.cfg-it{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;font-size:14px;color:var(--ink2);transition:background .1s;border-left:2px solid transparent;min-height:44px}
+.cfg-it i{font-size:18px;flex-shrink:0}
+.cfg-it:hover{background:var(--bg)}
+.cfg-it.on{background:var(--bg);color:var(--ink);font-weight:600;border-left-color:var(--ink)}
+.cfg-c{overflow-y:auto;padding:16px 18px;background:var(--bg)}
+.cfg-p{display:none}.cfg-p.on{display:block}
+.cfg-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.cfg-sub{font-size:13px;color:var(--ink3);margin-bottom:16px}
+.crow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);min-height:50px}
+.crow:last-child{border-bottom:none}
+.clbl{font-size:14px;font-weight:500}
+.csub{font-size:12px;color:var(--ink3);margin-top:2px}
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.st{font-size:12px;font-weight:600;padding:7px 13px;border-radius:var(--r);border:1px solid var(--line);background:var(--s1);color:var(--ink2);cursor:pointer;font-family:inherit;min-height:36px}
+.st.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sp{display:none}.sp.on{display:block}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--line);cursor:pointer;position:relative;transition:background .2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--ok)}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(20px)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.06em;padding:7px 10px;border-bottom:1px solid var(--line);background:var(--bg)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink2)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg)}
+.uzone{border:2px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:12px}
+.uzone:hover{border-color:var(--ink3);background:var(--bg)}
+.uzone i{font-size:28px;color:var(--ink3);margin-bottom:7px;display:block}
+.uzone-t{font-size:14px;color:var(--ink3)}
+.uzone-s{font-size:12px;color:var(--ink4);margin-top:4px}
+
+/* ── EMAIL ──────────────────────────────────────── */
+.edet{display:none;padding:14px 16px;background:#FAFAF8;border-top:1px solid var(--line)}
+.edet.on{display:block}
+
+/* ── MOBILE NAV ─────────────────────────────────── */
+.mnav{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  height:var(--nav);background:var(--s1);border-top:1px solid var(--line);
+  z-index:100;padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.mni{display:flex;justify-content:space-around;align-items:center;height:calc(var(--nav) - env(safe-area-inset-bottom,0px))}
+.mni-i{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:4px 10px;border-radius:10px;cursor:pointer;
+  color:var(--ink3);text-decoration:none;position:relative;min-width:52px;
+}
+.mni-i.on{color:var(--ink)}
+.mni-i i{font-size:26px}
+.mni-i span{font-size:10px;font-weight:600;letter-spacing:.01em}
+.mni-b{position:absolute;top:0;right:4px;min-width:16px;height:16px;background:var(--err);color:#fff;font-size:9px;font-weight:700;border-radius:8px;padding:0 3px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--s1)}
+.more-sh{
+  position:fixed;bottom:var(--nav);left:0;right:0;
+  background:var(--s1);border-top:1px solid var(--line);
+  z-index:99;padding:16px 16px 8px;
+  box-shadow:0 -8px 24px rgba(0,0,0,.1);
+  transform:translateY(100%);transition:transform .25s ease;
+}
+.more-sh.open{transform:none}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+.more-it{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:12px 8px;border-radius:var(--r);cursor:pointer;
+  color:var(--ink2);background:var(--bg);min-height:70px;justify-content:center;
+}
+.more-it i{font-size:26px}
+.more-it span{font-size:11px;font-weight:600;text-align:center}
+
+/* ── COND DOT ───────────────────────────────────── */
+.cdot{position:relative;cursor:pointer;display:inline-flex;align-items:center}
+.cdot-d{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cdot .ctt{
+  position:absolute;bottom:calc(100%+5px);left:50%;
+  transform:translateX(-50%);background:var(--ink);color:#fff;
+  font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:10;
+}
+.cdot:hover .ctt{opacity:1}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:768px){
+  .rail{display:none}
+  .mnav{display:flex;align-items:stretch}
+  .vpad{padding:12px 14px calc(var(--nav) + 12px + env(safe-area-inset-bottom,0px))}
+  .pg2,.pg3{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr 1fr}
+  .wa3{grid-template-columns:1fr}
+  .wa-list{display:none}
+  .wpanel{display:none}
+  .cfg-ly{grid-template-columns:1fr}
+  .cfg-menu{display:none}
+  .topbar{padding:0 14px}
+}
+@media(min-width:769px){.mnav,.more-sh{display:none!important}}
+
+/* ── SCROLLBAR ──────────────────────────────────── */
+*::-webkit-scrollbar{width:4px;height:4px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════════════════════════════════════════
+     RAIL — DESKTOP
+═══════════════════════════════════════════ -->
+<nav class="rail" aria-label="Menu principal">
+  <div class="brand" aria-label="MYIA Síndicos"><span>M</span></div>
+  <a class="ri on" data-tab="painel" onclick="nav('painel',this)" aria-label="Painel"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span class="tt">Painel</span></a>
+  <a class="ri" data-tab="email" onclick="nav('email',this)" aria-label="Email"><i class="ti ti-mail" aria-hidden="true"></i><span class="badge">4</span><span class="tt">Email</span></a>
+  <a class="ri" data-tab="wapp" onclick="nav('wapp',this)" aria-label="WhatsApp"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i><span class="badge">5</span><span class="tt">WhatsApp</span></a>
+  <a class="ri" data-tab="agenda" onclick="nav('agenda',this)" aria-label="Agenda"><i class="ti ti-calendar" aria-hidden="true"></i><span class="tt">Agenda</span></a>
+  <div class="rsep"></div>
+  <a class="ri" data-tab="ocorr" onclick="nav('ocorr',this)" aria-label="Ocorrências"><i class="ti ti-alert-circle" aria-hidden="true"></i><span class="badge">2</span><span class="tt">Ocorrências</span></a>
+  <a class="ri" data-tab="informe" onclick="nav('informe',this)" aria-label="Comunicados"><i class="ti ti-speakerphone" aria-hidden="true"></i><span class="tt">Comunicados</span></a>
+  <a class="ri" data-tab="assembleia" onclick="nav('assembleia',this)" aria-label="Assembleias"><i class="ti ti-users" aria-hidden="true"></i><span class="tt">Assembleias</span></a>
+  <a class="ri" data-tab="manut" onclick="nav('manut',this)" aria-label="Manutenção"><i class="ti ti-tool" aria-hidden="true"></i><span class="tt">Manutenção</span></a>
+  <div style="flex:1"></div>
+  <a class="ri" data-tab="config" onclick="nav('config',this)" aria-label="Configurações"><i class="ti ti-settings" aria-hidden="true"></i><span class="tt">Configurações</span></a>
+</nav>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-title" id="tb-title">Bom dia, Ana 👋</div>
+  <div class="tb-sub">Sex, 16 mai</div>
+  <div class="av" title="Perfil" onclick="nav('config',document.querySelector('[data-tab=config]'));showCfg('perfil',document.getElementById('ci-perfil'))">ANA</div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     PAINEL
+═══════════════════════════════════════════ -->
+<div class="view on vpad" id="v-painel">
+
+  <!-- 3 stats rápidos -->
+  <div class="stat-row">
+    <div class="stat" onclick="nav('email',document.querySelector('[data-tab=email]'))" tabindex="0" role="button" aria-label="Ver emails pendentes">
+      <div class="stat-lbl">EMAIL</div>
+      <div class="stat-val" style="color:var(--err)">4</div>
+      <div class="stat-sub">pendentes</div>
+      <div class="prog"><div class="prog-f" style="width:67%;background:var(--ok)"></div></div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:3px">8 de 12 · 67%</div>
+    </div>
+    <div class="stat" onclick="nav('wapp',document.querySelector('[data-tab=wapp]'))" tabindex="0" role="button" aria-label="Ver WhatsApp pendente">
+      <div class="stat-lbl">WHATSAPP</div>
+      <div class="stat-val" style="color:var(--err)">5</div>
+      <div class="stat-sub">pendentes</div>
+      <div class="prog"><div class="prog-f" style="width:72%;background:var(--ok)"></div></div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:3px">13 de 18 · 72%</div>
+    </div>
+    <div class="stat" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'))" tabindex="0" role="button" aria-label="Ver ocorrências">
+      <div class="stat-lbl">OCORRÊNCIAS</div>
+      <div class="stat-val" style="color:var(--warn)">2</div>
+      <div class="stat-sub">aguardam você</div>
+    </div>
+  </div>
+
+  <div class="pg2">
+
+    <!-- Carteira - pizza clicável por condomínio -->
+    <div class="card">
+      <div class="cp">
+        <div class="ctitle">Minha Carteira — Mai/26</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <svg width="96" height="96" viewBox="0 0 96 96" style="flex-shrink:0" aria-label="Pizza carteira por condomínio">
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--c1)" stroke-width="11" stroke-dasharray="60 166" stroke-dashoffset="0" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--c2)" stroke-width="11" stroke-dasharray="50 176" stroke-dashoffset="-60" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--c3)" stroke-width="11" stroke-dasharray="45 181" stroke-dashoffset="-110" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--c4)" stroke-width="11" stroke-dasharray="36 190" stroke-dashoffset="-155" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="36" fill="none" stroke="var(--c5)" stroke-width="11" stroke-dasharray="28 198" stroke-dashoffset="-191" transform="rotate(-90 48 48)"/>
+            <text x="48" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#0F0F0F" font-family="sans-serif">R$248k</text>
+            <text x="48" y="58" text-anchor="middle" font-size="9" fill="#888" font-family="sans-serif">10 cond.</text>
+          </svg>
+          <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;padding-bottom:5px;border-bottom:1px solid var(--line)">
+              <span style="font-size:9px;font-weight:700;color:var(--ink3)">CONDOMÍNIO</span>
+              <span style="font-size:9px;font-weight:700;color:var(--ink3)">ARREC.</span>
+              <span style="font-size:9px;font-weight:700;color:var(--ink3);width:28px;text-align:right">INAD.</span>
+            </div>
+            <!-- Cada linha clica e vai para config do condomínio -->
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:2px 0;cursor:pointer;border-radius:5px" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="goCondConfig('Ed. Mar Azul','c1')" title="Abrir configurações Ed. Mar Azul">
+              <div style="display:flex;align-items:center;gap:6px"><div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div><span class="ctt">Ed. Mar Azul</span></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Mar Azul</span></div>
+              <span style="font-size:12px;font-weight:600">R$62k</span><span style="font-size:12px;font-weight:700;color:var(--err);width:28px;text-align:right">14%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:2px 0;cursor:pointer;border-radius:5px" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="goCondConfig('Parque Verde','c2')" title="Abrir configurações Parque Verde">
+              <div style="display:flex;align-items:center;gap:6px"><div class="cdot"><div class="cdot-d" style="background:var(--c2)"></div><span class="ctt">Parque Verde</span></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Parque Verde</span></div>
+              <span style="font-size:12px;font-weight:600">R$52k</span><span style="font-size:12px;font-weight:700;color:var(--warn);width:28px;text-align:right">11%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:2px 0;cursor:pointer;border-radius:5px" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="goCondConfig('Ed. Aurora','c3')" title="Abrir configurações Ed. Aurora">
+              <div style="display:flex;align-items:center;gap:6px"><div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Aurora</span></div>
+              <span style="font-size:12px;font-weight:600">R$48k</span><span style="font-size:12px;font-weight:700;color:var(--warn);width:28px;text-align:right">8%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:2px 0;cursor:pointer;border-radius:5px" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="goCondConfig('Cond. Panamby','c4')" title="Abrir configurações Cond. Panamby">
+              <div style="display:flex;align-items:center;gap:6px"><div class="cdot"><div class="cdot-d" style="background:var(--c4)"></div><span class="ctt">Cond. Panamby</span></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Cond. Panamby</span></div>
+              <span style="font-size:12px;font-weight:600">R$38k</span><span style="font-size:12px;font-weight:700;color:var(--warn);width:28px;text-align:right">7%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:2px 0;cursor:pointer;border-radius:5px" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="goCondConfig('Ed. Garibaldi','c5')" title="Abrir configurações Ed. Garibaldi">
+              <div style="display:flex;align-items:center;gap:6px"><div class="cdot"><div class="cdot-d" style="background:var(--c5)"></div><span class="ctt">Ed. Garibaldi</span></div><span style="font-size:12px;color:var(--ink2);margin-left:5px">Ed. Garibaldi</span></div>
+              <span style="font-size:12px;font-weight:600">R$28k</span><span style="font-size:12px;font-weight:700;color:var(--ok);width:28px;text-align:right">5%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Despesas + Ocorrências -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="cp" style="padding-bottom:6px"><div class="ctitle">Despesas a aprovar</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--line)" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="toast('Abrindo sistema financeiro — Ed. Mar Azul')">
+          <div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div><span class="ctt">Ed. Mar Azul</span></div><div style="flex:1;margin-left:6px"><div style="font-size:13px;font-weight:600">Ed. Mar Azul</div><div style="font-size:11px;color:var(--ink3)">3 despesas</div></div><span style="font-size:13px;font-weight:700">R$3.2k</span><i class="ti ti-chevron-right" style="font-size:14px;color:var(--ink3)" aria-hidden="true"></i>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--line)" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="toast('Abrindo sistema financeiro — Parque Verde')">
+          <div class="cdot"><div class="cdot-d" style="background:var(--c2)"></div><span class="ctt">Parque Verde</span></div><div style="flex:1;margin-left:6px"><div style="font-size:13px;font-weight:600">Parque Verde</div><div style="font-size:11px;color:var(--ink3)">2 despesas</div></div><span style="font-size:13px;font-weight:700">R$2.4k</span><i class="ti ti-chevron-right" style="font-size:14px;color:var(--ink3)" aria-hidden="true"></i>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background=''" onclick="toast('Abrindo sistema financeiro — Ed. Aurora')">
+          <div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div><div style="flex:1;margin-left:6px"><div style="font-size:13px;font-weight:600">Ed. Aurora</div><div style="font-size:11px;color:var(--ink3)">1 despesa</div></div><span style="font-size:13px;font-weight:700">R$1.8k</span><i class="ti ti-chevron-right" style="font-size:14px;color:var(--ink3)" aria-hidden="true"></i>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--line)"><span style="font-size:11px;color:var(--ink3)">6 despesas</span><span style="font-size:14px;font-weight:700">R$7.4k</span></div>
+      </div>
+
+      <div class="card">
+        <div class="cp" style="padding-bottom:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="ctitle" style="margin:0">Ocorrências</div><span class="tag tr">2 abertas</span></div></div>
+        <div class="oc" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'))">
+          <div class="cdot" style="margin-top:4px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
+          <div style="flex:1;margin-left:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span class="oc-num">703</span><span class="tag tr">2ª · multa</span></div>
+            <div style="font-size:13px;color:var(--ink2)">Barulho após 22h · Ed. Aurora</div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:4px"><i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i>Toque para ver notificação</div>
+          </div>
+        </div>
+        <div class="oc" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'))" style="border-bottom:none">
+          <div class="cdot" style="margin-top:4px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
+          <div style="flex:1;margin-left:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span class="oc-num">304</span><span class="tag ta">1ª · advertência</span></div>
+            <div style="font-size:13px;color:var(--ink2)">Animal sem coleira · Ed. Aurora</div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:4px"><i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i>Toque para ver notificação</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agenda + Tarefas -->
+  <div class="pg3">
+    <div class="card">
+      <div class="cp" style="padding-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div class="ctitle" style="margin:0">Agenda — semana</div>
+          <div style="display:flex;gap:5px;align-items:center">
+            <button class="btn bs" aria-label="Semana anterior" style="padding:4px 9px">‹</button>
+            <span style="font-size:11px;color:var(--ink2)">16–22 mai</span>
+            <button class="btn bs" aria-label="Próxima semana" style="padding:4px 9px">›</button>
+            <button class="btn bp bs">+ Novo</button>
+          </div>
+        </div>
+      </div>
+      <div class="cp" style="padding-top:0">
+        <div class="wk">
+          <div><div class="dh">SEG</div><div class="dn">12</div>
+            <div class="ev" style="background:#EFF6FF;color:#1E40AF" onclick="toggleEv(this)" title="Vistoria Ed. Mar Azul">10h Vistoria</div>
+            <div class="ev" style="background:#F0FDF4;color:#166534" onclick="toggleEv(this)">15h Reunião adm.</div>
+          </div>
+          <div><div class="dh">TER</div><div class="dn">13</div>
+            <div class="ev" style="background:#F5F3FF;color:#5B21B6" onclick="toggleEv(this)">19h Assembleia</div>
+          </div>
+          <div><div class="dh">QUA</div><div class="dn">14</div>
+            <div class="ev" style="background:#EFF6FF;color:#1E40AF" onclick="toggleEv(this)">09h Cotação</div>
+            <div class="ev" style="background:#F5F5F0;color:#78716C" onclick="toggleEv(this)">18h Academia</div>
+          </div>
+          <div><div class="dh">QUI</div><div class="dn">15</div>
+            <div class="ev" style="background:#FFF7ED;color:#92400E" onclick="toggleEv(this)">10h Reunião Aurora</div>
+            <div class="ev" style="background:#F0F9FF;color:#075985" onclick="toggleEv(this)">14h Vistoria Ipê</div>
+          </div>
+          <div>
+            <div class="dh tod">SEX</div><div class="dn tnow">16</div>
+            <div style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column">
+              <div class="ev" style="background:#EFF6FF;color:#1E40AF;flex-shrink:0" title="Reunião com Ana Rita Oliveira — Ed. Garibaldi, Unid. 3101-B" onclick="toggleEv(this)">08h Ana Rita</div>
+              <div class="ev" style="background:#FFF7ED;color:#92400E;flex-shrink:0" onclick="toggleEv(this)">09h Bomba d'água</div>
+              <div class="ev" style="background:#F0FDF4;color:#166534;flex-shrink:0" onclick="toggleEv(this)">10h Jardim Verde</div>
+              <div class="ev" style="background:#F5F3FF;color:#5B21B6;flex-shrink:0" onclick="toggleEv(this)">11h Assembleia Aurora</div>
+              <div class="ev" style="background:#FEF2F2;color:#991B1B;flex-shrink:0" onclick="toggleEv(this)">14h30 Panamby</div>
+              <div class="ev" style="background:#EFF6FF;color:#1E40AF;flex-shrink:0" onclick="toggleEv(this)">15h Reunião morador</div>
+              <div class="ev" style="background:#F0FDF4;color:#166534;flex-shrink:0" onclick="toggleEv(this)">17h Portmaster</div>
+              <div class="ev" style="background:#F5F5F0;color:#78716C;flex-shrink:0" onclick="toggleEv(this)">19h Jantar família</div>
+            </div>
+          </div>
+          <div><div class="dh" style="color:var(--ink3)">SÁB</div><div class="dn">17</div><div class="ev" style="background:#F5F5F0;color:#78716C" onclick="toggleEv(this)">12h Almoço</div></div>
+          <div><div class="dh" style="color:var(--ink3)">DOM</div><div class="dn">18</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarefas — clicáveis para abrir modal -->
+    <div class="card">
+      <div class="cp" style="padding-bottom:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="ctitle" style="margin:0">Minhas tarefas</div>
+          <button class="btn bp bs" onclick="addTask()">+ Nova</button>
+        </div>
+      </div>
+      <div id="task-list">
+        <div class="task" onclick="openTask(this)">
+          <div class="chk" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Marcar como concluída"></div>
+          <div style="flex:1;min-width:0">
+            <div class="task-t" style="font-size:14px;font-weight:500">Notificação unid. 703 — aprovar</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px"><div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div><span style="font-size:12px;color:var(--ink3);margin-left:2px">Ed. Aurora</span></div>
+          </div>
+          <span class="tag tr" style="flex-shrink:0;align-self:flex-start;margin-top:2px">urgente</span>
+        </div>
+        <div class="task" onclick="openTask(this)">
+          <div class="chk" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Marcar como concluída"></div>
+          <div style="flex:1;min-width:0">
+            <div class="task-t" style="font-size:14px;font-weight:500">Cotação elevador — 3 fornecedores</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px"><div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div><span class="ctt">Ed. Mar Azul</span></div><span style="font-size:12px;color:var(--ink3);margin-left:2px">Ed. Mar Azul</span></div>
+          </div>
+        </div>
+        <div class="task done" onclick="openTask(this)">
+          <div class="chk ok" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="true" tabindex="0" aria-label="Desmarcar"><i class="ti ti-check" style="font-size:10px;color:#fff" aria-hidden="true"></i></div>
+          <div style="flex:1;min-width:0">
+            <div class="task-t" style="font-size:14px;font-weight:500">Boletos maio — Parque Verde</div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:3px">MYIA concluiu automaticamente</div>
+          </div>
+        </div>
+        <div class="task" style="border-bottom:none" onclick="openTask(this)">
+          <div class="chk" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Marcar como concluída"></div>
+          <div style="flex:1;min-width:0">
+            <div class="task-t" style="font-size:14px;font-weight:500">Renovar AVCB — Ed. Mar Azul</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px"><div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div><span class="ctt">Ed. Mar Azul</span></div><span style="font-size:12px;color:var(--ink3);margin-left:2px">Ed. Mar Azul · 30 dias</span></div>
+          </div>
+          <span class="tag tr" style="flex-shrink:0;align-self:flex-start;margin-top:2px">prazo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /painel -->
+
+<!-- ═══════════════════════════════════════════
+     EMAIL
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-email">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="font-size:16px;font-weight:700">Inbox</span>
+    <span style="font-size:13px;color:var(--ink3)">4 pendentes de 12</span>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div class="row click" onclick="toggleEmail('em1',this)">
+      <div class="av-s" style="background:#FEF2F2;color:#991B1B">PV</div>
+      <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">Prefeitura de Salvador <span class="tag tr" style="margin-left:4px">prazo</span></div><div style="font-size:12px;color:var(--ink3)">Ed. Mar Azul</div><div style="font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">AVCB vence em 30 dias — renovação obrigatória</div></div>
+      <div style="font-size:12px;color:var(--ink3);flex-shrink:0;margin-left:8px">09h12</div>
+    </div>
+    <div class="edet" id="em1">
+      <div style="font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:12px">O AVCB do <strong>Edifício Mar Azul</strong> vence em <strong>15/jun/2026</strong>. Renovação obrigatória por lei.</div>
+      <div class="myia-b"><div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">MYIA sugere resposta</span></div><div class="myia-txt">"Prezados, recebemos o comunicado. Estamos providenciando a renovação do AVCB e informaremos o agendamento em breve."</div><div class="myia-acts"><button class="btn bp bs" onclick="sendReply(this)">Enviar</button><button class="btn bs">Editar</button><button class="btn bs" onclick="addTaskFrom('Renovar AVCB — Ed. Mar Azul');event.stopPropagation()"><i class="ti ti-checkbox" aria-hidden="true"></i> Tarefa</button><button class="btn bs" onclick="toast('Agendado','ok');event.stopPropagation()"><i class="ti ti-calendar" aria-hidden="true"></i> Agendar</button></div></div>
+    </div>
+    <div class="row click" onclick="toggleEmail('em2',this)">
+      <div class="av-s" style="background:#F0FDF4;color:#166534">JV</div>
+      <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">Jardim Verde Paisagismo <span class="tag tg" style="margin-left:4px">orçamento</span></div><div style="font-size:12px;color:var(--ink3)">Ed. Aurora</div><div style="font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Proposta jardinagem mai/26 — R$380/mês</div></div>
+      <div style="font-size:12px;color:var(--ink3);flex-shrink:0;margin-left:8px">08h45</div>
+    </div>
+    <div class="edet" id="em2">
+      <div style="font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:12px">Proposta para <strong>Ed. Aurora</strong>: R$380/mês — poda semanal, adubação e limpeza.</div>
+      <div class="myia-b"><div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">MYIA analisou</span></div><div class="myia-txt">12% abaixo do atual (R$432/mês). Verba disponível: R$4.800 ✓</div><div class="myia-acts"><button class="btn bp bs" onclick="sendReply(this)">Enviar resposta</button><button class="btn bs" onclick="toast('Proposta aceita','ok')">Aceitar</button><button class="btn bs" onclick="addTaskFrom('Decidir jardinagem Aurora');event.stopPropagation()"><i class="ti ti-checkbox" aria-hidden="true"></i> Tarefa</button></div></div>
+    </div>
+    <div class="row click" onclick="toggleEmail('em3',this)">
+      <div class="av-s" style="background:#EFF6FF;color:#1E40AF">MA</div>
+      <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">Maria Pereira — Unid. 205 <span class="tag ta" style="margin-left:4px">reclamação</span></div><div style="font-size:12px;color:var(--ink3)">Ed. Aurora</div><div style="font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Infiltração no teto sem resolução — 2 semanas</div></div>
+      <div style="font-size:12px;color:var(--ink3);flex-shrink:0;margin-left:8px">08h20</div>
+    </div>
+    <div class="edet" id="em3">
+      <div style="font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:12px">Já faz 2 semanas desde o primeiro chamado sem resolução.</div>
+      <div class="myia-b"><div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">MYIA sugere</span></div><div class="myia-txt">"Pedimos desculpas. Agendamos vistoria técnica para amanhã às 10h. Manteremos contato."</div><div class="myia-acts"><button class="btn bp bs" onclick="sendReply(this)">Enviar</button><button class="btn bs">Editar</button><button class="btn bs" onclick="addTaskFrom('Vistoria Unid. 205 — Ed. Aurora');event.stopPropagation()"><i class="ti ti-checkbox" aria-hidden="true"></i> Tarefa</button></div></div>
+    </div>
+    <div class="row" style="opacity:.5">
+      <div class="av-s" style="background:var(--bg);color:var(--ink3)">JC</div>
+      <div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--ink2)">João Costa — Unid. 101 <span class="tag tn" style="margin-left:4px">respondido</span></div><div style="font-size:12px;color:var(--ink3)">Ed. Aurora</div><div style="font-size:13px;color:var(--ink3)">2ª via boleto — MYIA respondeu automaticamente ✓</div></div>
+      <div style="font-size:12px;color:var(--ink3);flex-shrink:0;margin-left:8px">07h55</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WHATSAPP 3 COLUNAS
+═══════════════════════════════════════════ -->
+<div class="vflex" id="v-wapp">
+  <div class="wa3">
+    <div class="wa-list">
+      <div style="padding:10px 12px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">WhatsApp <span class="tag tr">5</span></div>
+      <div class="wc on" onclick="selWa(this,'CS','Carlos Silva','302','Ed. Aurora','Quando chega minha encomenda? Já faz 3 dias.','#EFF6FF','#1E40AF','Sua encomenda está na portaria desde 13/05. Prazo: 5 dias.','respondido')"><div class="wc-av" style="background:#EFF6FF;color:#1E40AF">CS</div><div class="wc-info"><div class="wc-name">Carlos Silva</div><div class="wc-cond">Ed. Aurora · 302</div><div class="wc-prev">Quando chega minha encomenda?</div></div><div class="wc-time">09h31</div></div>
+      <div class="wc" onclick="selWa(this,'MO','Maria Oliveira','501','Ed. Aurora','Barulho no 703 de novo!','#FEF2F2','#991B1B','Registramos. O 703 será notificado conforme art. 14.','pendente')"><div class="wc-av" style="background:#FEF2F2;color:#991B1B">MO</div><div class="wc-info"><div class="wc-name">Maria Oliveira</div><div class="wc-cond">Ed. Aurora · 501</div><div class="wc-prev">Barulho no 703 de novo!</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div class="wc-time">09h18</div><div style="width:18px;height:18px;background:var(--err);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center">1</div></div></div>
+      <div class="wc" onclick="selWa(this,'JS','José Santos','104','Parque Verde','Meu boleto não chegou','#F0FDF4','#166534','Seu boleto foi enviado por email. Posso reenviar agora?','pendente')"><div class="wc-av" style="background:#F0FDF4;color:#166534">JS</div><div class="wc-info"><div class="wc-name">José Santos</div><div class="wc-cond">Parque Verde · 104</div><div class="wc-prev">Meu boleto não chegou</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div class="wc-time">08h55</div><div style="width:18px;height:18px;background:var(--err);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center">2</div></div></div>
+      <div class="wc" onclick="selWa(this,'?','+55 71 99123-4567','—','—','Interesse no serviço','#FFFBEB','#78350F','Olá! Poderia se identificar? Qual condomínio você é?','pendente')"><div class="wc-av" style="background:#FFFBEB;color:#78350F">?</div><div class="wc-info"><div class="wc-name">+55 71 99123-4567</div><div class="wc-cond" style="color:var(--warn)">Não identificado</div><div class="wc-prev">Interesse no serviço</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div class="wc-time">08h40</div><div style="width:18px;height:18px;background:var(--err);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center">1</div></div></div>
+      <div class="wc" onclick="selWa(this,'CA','Carlos (irmão)','—','Pessoal','Almoço domingo confirmado!','#F3F4F6','#6B7280','Boa! Confirmo sim, abraço!','respondido')"><div class="wc-av" style="background:#F3F4F6;color:#6B7280">CA</div><div class="wc-info"><div class="wc-name">Carlos (irmão)</div><div class="wc-cond">Pessoal</div><div class="wc-prev">Almoço domingo confirmado!</div></div><div class="wc-time">ontem</div></div>
+    </div>
+    <div class="wchat">
+      <div class="wch"><div class="wc-av" id="wh-av" style="background:#EFF6FF;color:#1E40AF;width:36px;height:36px">CS</div><div><div style="font-size:14px;font-weight:600" id="wh-n">Carlos Silva</div><div style="font-size:12px;color:var(--ink3)" id="wh-s">Ed. Aurora · Unid. 302</div></div></div>
+      <div class="wmsgs" id="wa-m"><div class="bin">Quando chega minha encomenda? Já faz 3 dias.</div><div class="bout">Deixa eu verificar agora mesmo.</div><div class="bin">É muito importante, obrigado!</div></div>
+      <div class="wsug">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span style="font-size:11px;font-weight:700;color:var(--myia)">MYIA sugere</span></div>
+        <div style="font-size:13px;color:#3730A3;line-height:1.5;margin-bottom:8px;font-style:italic" id="wa-sug">"Sua encomenda está na portaria desde 13/05. Prazo: 5 dias."</div>
+        <div style="display:flex;gap:6px"><button class="btn bp bs" onclick="sendSug()">Enviar</button><button class="btn bs">Editar</button></div>
+      </div>
+      <div class="winrow"><input class="win" id="wa-in" placeholder="Mensagem…" onkeydown="if(event.key==='Enter')sendMsg()"/><button class="wsend" onclick="sendMsg()" aria-label="Enviar mensagem"><i class="ti ti-send" aria-hidden="true"></i></button></div>
+    </div>
+    <div class="wpanel">
+      <div style="font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.07em;margin-bottom:12px">CONTATO</div>
+      <div class="wpr-name" id="wp-name">Carlos Silva</div>
+      <div class="wpr-sub" id="wp-sub">Ed. Aurora · Unid. 302</div>
+      <div style="margin-bottom:14px">
+        <div class="irow"><span class="il">Unidade</span><span style="font-weight:500" id="wp-unit">302</span></div>
+        <div class="irow"><span class="il">Condomínio</span><span style="font-weight:500" id="wp-cd">Ed. Aurora</span></div>
+        <div class="irow"><span class="il">Status</span><span class="tag tg" id="wp-status">Respondido</span></div>
+      </div>
+      <div style="height:1px;background:var(--line);margin-bottom:14px"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;margin-bottom:10px">AÇÕES</div>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+        <button class="btn" style="justify-content:flex-start;min-height:44px" onclick="addTaskFrom('Tarefa — '+document.getElementById('wp-name').textContent);toast('Tarefa criada','ok')"><i class="ti ti-checkbox" aria-hidden="true"></i>Criar tarefa</button>
+        <button class="btn" style="justify-content:flex-start;min-height:44px" onclick="toast('Reunião adicionada à agenda','ok')"><i class="ti ti-calendar" aria-hidden="true"></i>Agendar reunião</button>
+      </div>
+      <div style="height:1px;background:var(--line);margin-bottom:14px"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;margin-bottom:10px">SALVAR CONTATO</div>
+      <div class="field"><label>Condomínio</label><select id="wp-sel-c"><option>Ed. Mar Azul</option><option selected>Ed. Aurora</option><option>Parque Verde</option><option>Cond. Panamby</option><option>Não vinculado</option></select></div>
+      <div class="field"><label>Unidade</label><input id="wp-sel-u" value="302" placeholder="Ex: 302"/></div>
+      <button class="btn bp" style="width:100%" onclick="saveContact()">Salvar contato</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AGENDA
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-agenda">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <span style="font-size:16px;font-weight:700">Agenda</span>
+    <div style="display:flex;gap:6px;align-items:center"><button class="btn bs" style="padding:4px 9px">‹</button><span style="font-size:12px;color:var(--ink2)">16–22 mai</span><button class="btn bs" style="padding:4px 9px">›</button><button class="btn bp bs">+ Novo</button></div>
+  </div>
+  <div class="card cp">
+    <div class="wk">
+      <div><div class="dh">SEG</div><div class="dn">12</div><div class="ev" style="background:#EFF6FF;color:#1E40AF" onclick="toggleEv(this)">10h Vistoria Mar Azul</div><div class="ev" style="background:#F0FDF4;color:#166534" onclick="toggleEv(this)">15h Reunião adm.</div></div>
+      <div><div class="dh">TER</div><div class="dn">13</div><div class="ev" style="background:#F5F3FF;color:#5B21B6" onclick="toggleEv(this)">19h Assembleia Panamby</div></div>
+      <div><div class="dh">QUA</div><div class="dn">14</div><div class="ev" style="background:#EFF6FF;color:#1E40AF" onclick="toggleEv(this)">09h Cotação elevador</div><div class="ev" style="background:#F5F5F0;color:#78716C" onclick="toggleEv(this)">18h Academia</div></div>
+      <div><div class="dh">QUI</div><div class="dn">15</div><div class="ev" style="background:#FFF7ED;color:#92400E" onclick="toggleEv(this)">10h Reunião Aurora</div><div class="ev" style="background:#F0F9FF;color:#075985" onclick="toggleEv(this)">14h Vistoria Ipê</div></div>
+      <div>
+        <div class="dh tod">SEX</div><div class="dn tnow">16</div>
+        <div style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column">
+          <div class="ev" style="background:#EFF6FF;color:#1E40AF;flex-shrink:0" title="Reunião Ana Rita — Ed. Garibaldi 3101-B" onclick="toggleEv(this)">08h Ana Rita</div>
+          <div class="ev" style="background:#FFF7ED;color:#92400E;flex-shrink:0" onclick="toggleEv(this)">09h Bomba d'água</div>
+          <div class="ev" style="background:#F0FDF4;color:#166534;flex-shrink:0" onclick="toggleEv(this)">10h Jardim Verde</div>
+          <div class="ev" style="background:#F5F3FF;color:#5B21B6;flex-shrink:0" onclick="toggleEv(this)">11h Assembleia Aurora</div>
+          <div class="ev" style="background:#FEF2F2;color:#991B1B;flex-shrink:0" onclick="toggleEv(this)">14h30 Assembleia Panamby</div>
+          <div class="ev" style="background:#EFF6FF;color:#1E40AF;flex-shrink:0" onclick="toggleEv(this)">15h Reunião morador</div>
+          <div class="ev" style="background:#F0FDF4;color:#166534;flex-shrink:0" onclick="toggleEv(this)">17h Portmaster</div>
+          <div class="ev" style="background:#F5F5F0;color:#78716C;flex-shrink:0" onclick="toggleEv(this)">19h Jantar família</div>
+        </div>
+      </div>
+      <div><div class="dh" style="color:var(--ink3)">SÁB</div><div class="dn">17</div><div class="ev" style="background:#F5F5F0;color:#78716C" onclick="toggleEv(this)">12h Almoço família</div></div>
+      <div><div class="dh" style="color:var(--ink3)">DOM</div><div class="dn">18</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     OCORRÊNCIAS
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-ocorr">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:16px;font-weight:700">Ocorrências</span><button class="btn bp" onclick="toast('Nova ocorrência criada','ok')">+ Nova</button></div>
+  <div class="card">
+    <div class="oc" onclick="toggleOcorr(this)">
+      <div class="cdot" style="margin-top:5px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
+      <div style="flex:1;margin-left:8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="oc-num">703</span><span class="tag tr">2ª · multa R$150</span></div>
+        <div style="font-size:14px;color:var(--ink2)">Barulho após 22h</div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:2px">Ed. Aurora · Carlos Lima · Art. 14</div>
+        <div class="myia-b" style="display:none">
+          <div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">Notificação gerada — Art. 14</span></div>
+          <div class="myia-txt">"Prezado Sr. Carlos Lima, condômino da unidade 703, em razão de reincidência de perturbação do sossego após as 22h, conforme art. 14 do Regimento Interno, aplica-se multa de R$150,00 incluída na próxima cota condominial."</div>
+          <div class="myia-acts"><button class="btn bp bs" onclick="toast('Notificação enviada a Carlos Lima','ok');event.stopPropagation()">Aprovar e enviar</button><button class="btn bs" onclick="event.stopPropagation()">Editar</button><button class="btn bs" onclick="event.stopPropagation()">Ver artigo completo</button></div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:6px;display:flex;align-items:center;gap:4px" class="oc-hint"><i class="ti ti-chevron-down" style="font-size:13px" aria-hidden="true"></i>Toque para ver e aprovar notificação</div>
+      </div>
+    </div>
+    <div class="oc" onclick="toggleOcorr(this)" style="border-bottom:none">
+      <div class="cdot" style="margin-top:5px"><div class="cdot-d" style="background:var(--c3)"></div><span class="ctt">Ed. Aurora</span></div>
+      <div style="flex:1;margin-left:8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="oc-num">304</span><span class="tag ta">1ª · advertência</span></div>
+        <div style="font-size:14px;color:var(--ink2)">Animal sem coleira</div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:2px">Ed. Aurora · Sandra Moura · Art. 8</div>
+        <div class="myia-b" style="display:none">
+          <div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">Advertência gerada — Art. 8</span></div>
+          <div class="myia-txt">"Prezada Sra. Sandra Moura, condômina da unidade 304, conforme art. 8 do Regimento Interno, animais de estimação devem circular nas áreas comuns com coleira obrigatória. Esta é uma advertência formal. Reincidência resultará em multa."</div>
+          <div class="myia-acts"><button class="btn bp bs" onclick="toast('Advertência enviada a Sandra Moura','ok');event.stopPropagation()">Aprovar e enviar</button><button class="btn bs" onclick="event.stopPropagation()">Editar</button></div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:6px;display:flex;align-items:center;gap:4px" class="oc-hint"><i class="ti ti-chevron-down" style="font-size:13px" aria-hidden="true"></i>Toque para ver e aprovar notificação</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     COMUNICADOS
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-informe">
+  <div style="font-size:16px;font-weight:700;margin-bottom:14px">Comunicar moradores</div>
+  <div class="pg2">
+    <div class="card cp">
+      <div class="ctitle">Novo informativo</div>
+      <div class="field"><label>Condomínio</label><select id="inf-c"><option>Ed. Mar Azul</option><option>Ed. Aurora</option><option>Parque Verde</option><option>Cond. Panamby</option><option>Todos</option></select></div>
+      <div class="field"><label>Assunto</label><input id="inf-a" placeholder="Ex: Manutenção do elevador..."/></div>
+      <div class="field"><label>Descreva a situação</label><textarea id="inf-b" placeholder="Ex: Na terça, 20/05, haverá manutenção no elevador entre 8h e 12h..."></textarea></div>
+      <button class="btn bm" onclick="gerarInforme()"><i class="ti ti-sparkles" aria-hidden="true"></i>Gerar com MYIA</button>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;margin-bottom:10px">PRÉ-VISUALIZAÇÃO</div>
+      <div style="background:var(--s1);border:1px solid var(--line);border-radius:var(--rl);padding:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><div style="width:30px;height:30px;border-radius:7px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff" id="inf-logo">MA</div><div><div style="font-size:13px;font-weight:700" id="inf-cn">Ed. Mar Azul</div><div style="font-size:11px;color:var(--ink3)">Comunicado · 16 mai 2026</div></div></div>
+        <div style="font-size:13px;color:var(--ink2);line-height:1.7" id="inf-prev">O comunicado gerado pela MYIA aparecerá aqui após você preencher e clicar em Gerar.</div>
+      </div>
+      <div id="inf-acts" style="margin-top:12px;display:none;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:var(--ink3)">Enviar para moradores de <strong id="inf-dest">Ed. Mar Azul</strong>:</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bp" onclick="toast('Enviado por email a todos os moradores','ok')"><i class="ti ti-mail" aria-hidden="true"></i>Enviar por email</button>
+          <button class="btn" onclick="toast('Enviado por WhatsApp','ok')"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>WhatsApp</button>
+          <button class="btn">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ASSEMBLEIAS
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-assembleia">
+  <div style="font-size:16px;font-weight:700;margin-bottom:14px">Assembleias</div>
+  <div class="pg2">
+    <div class="card cp">
+      <div class="ctitle">Convocar assembleia</div>
+      <div class="field"><label>Condomínio</label><select><option>Ed. Mar Azul</option><option>Ed. Aurora</option><option>Parque Verde</option></select></div>
+      <div class="field"><label>Tipo</label><select><option>Assembleia Ordinária</option><option>Assembleia Extraordinária</option></select></div>
+      <div class="field"><label>Data e horário</label><input placeholder="Ex: 25/05/2026 às 19h00"/></div>
+      <div class="field"><label>Local</label><input placeholder="Ex: Salão de festas · 1º andar"/></div>
+      <div class="field"><label>Pauta (um item por linha)</label><textarea placeholder="1. Aprovação das contas 2025&#10;2. Eleição do síndico&#10;3. Orçamento 2026"></textarea></div>
+      <button class="btn bm"><i class="ti ti-sparkles" aria-hidden="true"></i>Gerar convocação</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card cp">
+        <div class="ctitle">Edital gerado</div>
+        <div style="background:var(--bg);border-radius:var(--r);padding:14px;font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:12px">Convidamos todos os condôminos para a <strong>Assembleia Geral Ordinária</strong> em <strong>25/05/2026 às 19h</strong>, no Salão de Festas. Pauta: aprovação de contas, eleição de síndico, orçamento 2026.</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn bp" onclick="toast('Convocação enviada','ok')">Enviar</button><button class="btn" onclick="toast('Adicionado à agenda','ok')"><i class="ti ti-calendar" aria-hidden="true"></i>Agenda</button><button class="btn">Editar</button></div>
+      </div>
+      <div class="card cp">
+        <div class="ctitle">Atas</div>
+        <div class="row click" style="padding:10px 0"><i class="ti ti-file-text" style="font-size:18px;color:var(--ink3)" aria-hidden="true"></i><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:500">Ata — Assembleia 12/01/2026</div><div style="font-size:12px;color:var(--ink3)">Ed. Mar Azul · Ordinária</div></div><button class="btn bs">Ver</button></div>
+        <div class="row click" style="padding:10px 0;border-bottom:none"><i class="ti ti-file-text" style="font-size:18px;color:var(--ink3)" aria-hidden="true"></i><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:500">Ata — Assembleia 08/07/2025</div><div style="font-size:12px;color:var(--ink3)">Ed. Mar Azul · Extraordinária</div></div><button class="btn bs">Ver</button></div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><div class="field" style="margin-bottom:8px"><label>Anexar nova ata</label><input type="file" accept=".pdf,.docx"/></div><button class="btn bp bs" onclick="toast('Ata salva com sucesso','ok')">Salvar ata</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MANUTENÇÃO
+═══════════════════════════════════════════ -->
+<div class="view vpad" id="v-manut">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <span style="font-size:16px;font-weight:700">Manutenção</span>
+    <button class="btn bp" onclick="document.getElementById('mf').style.display=document.getElementById('mf').style.display==='none'?'block':'none'">+ Nova</button>
+  </div>
+  <!-- Formulário nova manutenção -->
+  <div id="mf" class="card cp" style="display:none;margin-bottom:12px">
+    <div class="ctitle">Nova manutenção</div>
+    <div class="pg2">
+      <div class="field"><label>Condomínio</label><select><option>Ed. Mar Azul</option><option>Ed. Aurora</option><option>Parque Verde</option></select></div>
+      <div class="field"><label>Tipo</label><select><option>Recorrente</option><option>Eventual</option></select></div>
+      <div class="field"><label>Descrição</label><input placeholder="Ex: Dedetização, Inspeção elevador..."/></div>
+      <div class="field"><label>Recorrência</label><select><option>Mensal</option><option>Bimestral</option><option>Trimestral</option><option>Semestral</option><option>Anual</option><option>Única vez</option></select></div>
+      <div class="field"><label>Próxima data</label><input type="date"/></div>
+      <div class="field"><label>Verba prevista</label><input placeholder="R$ 0,00"/></div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn bp" onclick="toast('Manutenção salva','ok');document.getElementById('mf').style.display='none'">Salvar</button><button class="btn" onclick="document.getElementById('mf').style.display='none'">Cancelar</button></div>
+  </div>
+
+  <!-- Recorrentes -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="cp" style="padding-bottom:6px"><div class="ctitle">Recorrentes</div></div>
+    <div class="manut-r"><div class="manut-ic"><i class="ti ti-refresh" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:500">Dedetização</div><div style="font-size:12px;color:var(--ink3)">Ed. Aurora · mensal · próxima: 20/05</div></div><span class="tag ta">4 dias</span><button class="btn bs" style="margin-left:8px">Editar</button></div>
+    <div class="manut-r"><div class="manut-ic"><i class="ti ti-refresh" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:500">Inspeção elevador</div><div style="font-size:12px;color:var(--ink3)">Ed. Mar Azul · bimestral · próxima: 28/05</div></div><span class="tag tb">12 dias</span><button class="btn bs" style="margin-left:8px">Editar</button></div>
+    <div class="manut-r"><div class="manut-ic"><i class="ti ti-refresh" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:500">Limpeza caixa d'água</div><div style="font-size:12px;color:var(--ink3)">Parque Verde · semestral · próxima: 10/06</div></div><span class="tag tn">25 dias</span><button class="btn bs" style="margin-left:8px">Editar</button></div>
+    <div class="manut-r"><div class="manut-ic"><i class="ti ti-refresh" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:500">Revisão gerador</div><div style="font-size:12px;color:var(--ink3)">Cond. Panamby · trimestral · próxima: 15/07</div></div><span class="tag tn">60 dias</span><button class="btn bs" style="margin-left:8px">Editar</button></div>
+  </div>
+
+  <!-- Eventuais / cotações -->
+  <div class="card">
+    <div class="cp" style="padding-bottom:6px"><div class="ctitle">Eventuais — cotações</div></div>
+    <div style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div><div style="font-size:15px;font-weight:600">Manutenção elevador</div><div style="font-size:12px;color:var(--ink3);margin-top:2px">Ed. Mar Azul · verba: R$3.500 ✓</div></div>
+        <span class="tag ta">Em cotação</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+        <div style="border:1px solid var(--line);border-radius:var(--r);padding:12px"><div style="font-size:13px;font-weight:600">Elevadores RS</div><div style="font-size:22px;font-weight:700;color:var(--ok);margin:7px 0 3px;letter-spacing:-1px">R$2.800</div><span class="tag tg">MENOR PREÇO</span></div>
+        <div style="border:1px solid var(--line);border-radius:var(--r);padding:12px"><div style="font-size:13px;font-weight:600">TecnoElev</div><div style="font-size:22px;font-weight:700;margin:7px 0 3px;letter-spacing:-1px">R$3.200</div><div style="font-size:12px;color:var(--ink3)">recebido</div></div>
+        <div style="border:1.5px dashed var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px"><i class="ti ti-clock" style="font-size:22px;color:var(--ink4)" aria-hidden="true"></i><div style="font-size:12px;color:var(--ink3)">Aguardando</div></div>
+      </div>
+      <div class="myia-b"><div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">MYIA recomenda</span></div><div class="myia-txt">Elevadores RS: menor preço e 4.2★ em outros condomínios. Dentro do orçamento aprovado.</div><div class="myia-acts"><button class="btn bp bs" onclick="toast('Elevadores RS aprovados!','ok')">Aprovar Elevadores RS</button><button class="btn bs" onclick="toast('Aguardando 3ª cotação')">Aguardar 3ª cotação</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CONFIGURAÇÕES
+═══════════════════════════════════════════ -->
+<div class="vflex" id="v-config">
+  <div class="cfg-ly" style="width:100%;height:100%">
+    <div class="cfg-menu">
+      <div style="font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.07em;padding:8px 14px 4px">CONFIG.</div>
+      <div class="cfg-it on" id="ci-integ" onclick="showCfg('integ',this)"><i class="ti ti-plug" aria-hidden="true"></i>Integrações</div>
+      <div class="cfg-it" id="ci-conds" onclick="showCfg('conds',this)"><i class="ti ti-building" aria-hidden="true"></i>Condomínios</div>
+      <div class="cfg-it" id="ci-novo" onclick="showCfg('novo',this)"><i class="ti ti-plus" aria-hidden="true"></i>Novo condomínio</div>
+      <div class="cfg-it" id="ci-perfil" onclick="showCfg('perfil',this)"><i class="ti ti-user" aria-hidden="true"></i>Perfil</div>
+      <div class="cfg-it" id="ci-notif" onclick="showCfg('notif',this)"><i class="ti ti-bell" aria-hidden="true"></i>Notificações</div>
+      <div class="cfg-it" id="ci-myia" onclick="showCfg('myia',this)"><i class="ti ti-sparkles" aria-hidden="true"></i>MYIA</div>
+    </div>
+    <div class="cfg-c">
+
+      <!-- Integrações -->
+      <div class="cfg-p on" id="cp-integ">
+        <div class="cfg-title">Integrações</div><div class="cfg-sub">Conecte seus canais de comunicação</div>
+        <div class="card cp"><div class="crow"><div><div class="clbl">Gmail</div><div class="csub">ana@sindico.com.br — ativo</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="Gmail"></button></div><div class="crow"><div><div class="clbl">WhatsApp</div><div class="csub">+55 71 99999-0000 — conectado</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="WhatsApp"></button></div><div class="crow"><div><div class="clbl">Sistema Financeiro</div><div class="csub">Integrado via API</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="Financeiro"></button></div><div class="crow"><div><div class="clbl">Google Calendar</div><div class="csub">Agenda pessoal — não conectado</div></div><button class="btn bp bs" onclick="toast('Conectando…')">Conectar</button></div><div class="crow"><div><div class="clbl">Outlook / Microsoft 365</div><div class="csub">Email corporativo</div></div><button class="btn bs">Conectar</button></div></div>
+      </div>
+
+      <!-- Condomínios -->
+      <div class="cfg-p" id="cp-conds">
+        <div class="cfg-title">Condomínios</div><div class="cfg-sub">Clique para editar</div>
+        <div class="card cp">
+          <div class="row click" onclick="goCondConfig('Ed. Mar Azul','c1')"><div class="cdot"><div class="cdot-d" style="background:var(--c1)"></div></div><div style="flex:1;margin-left:10px"><div style="font-size:14px;font-weight:500">Ed. Mar Azul</div><div style="font-size:12px;color:var(--ink3)">200 unidades · TopGest</div></div><i class="ti ti-chevron-right" style="font-size:15px;color:var(--ink3)" aria-hidden="true"></i></div>
+          <div class="row click" onclick="goCondConfig('Parque Verde','c2')"><div class="cdot"><div class="cdot-d" style="background:var(--c2)"></div></div><div style="flex:1;margin-left:10px"><div style="font-size:14px;font-weight:500">Parque Verde</div><div style="font-size:12px;color:var(--ink3)">120 unidades · GestCond</div></div><i class="ti ti-chevron-right" style="font-size:15px;color:var(--ink3)" aria-hidden="true"></i></div>
+          <div class="row click" style="border-bottom:none" onclick="goCondConfig('Ed. Aurora','c3')"><div class="cdot"><div class="cdot-d" style="background:var(--c3)"></div></div><div style="flex:1;margin-left:10px"><div style="font-size:14px;font-weight:500">Ed. Aurora</div><div style="font-size:12px;color:var(--ink3)">84 unidades · Administra Bem</div></div><i class="ti ti-chevron-right" style="font-size:15px;color:var(--ink3)" aria-hidden="true"></i></div>
+        </div>
+        <button class="btn bp" onclick="goCondConfig('Novo','')"><i class="ti ti-plus" aria-hidden="true"></i>Novo condomínio</button>
+      </div>
+
+      <!-- Novo / editar condomínio -->
+      <div class="cfg-p" id="cp-novo">
+        <div class="cfg-title" id="cfg-cond-title">Configurar condomínio</div>
+        <div class="cfg-sub" id="cfg-cond-sub">Preencha os dados do condomínio</div>
+        <div class="sub-tabs">
+          <button class="st on" id="st-dados" onclick="showSub('dados',this)">Dados gerais</button>
+          <button class="st" id="st-adm" onclick="showSub('adm',this)">Administradora</button>
+          <button class="st" id="st-gestores" onclick="showSub('gestores',this)">Gestores</button>
+          <button class="st" id="st-units" onclick="showSub('units',this)">Moradores</button>
+          <button class="st" id="st-reg" onclick="showSub('reg',this)">Regimento</button>
+          <button class="st" id="st-orc" onclick="showSub('orc',this)">Orçamento</button>
+        </div>
+        <div class="sp on" id="sp-dados"><div class="card cp"><div class="pg2"><div class="field"><label>Nome do condomínio</label><input id="cfg-cond-nome" placeholder="Ex: Edifício Aurora"/></div><div class="field"><label>CNPJ</label><input placeholder="00.000.000/0001-00"/></div><div class="field"><label>Endereço</label><input placeholder="Rua, número, bairro"/></div><div class="field"><label>CEP</label><input placeholder="00000-000"/></div><div class="field"><label>Cidade</label><input value="Salvador"/></div><div class="field"><label>Nº de unidades</label><input type="number" placeholder="Ex: 84"/></div></div><button class="btn bp" onclick="toast('Dados salvos','ok')">Salvar</button></div></div>
+        <div class="sp" id="sp-adm"><div class="card cp"><div class="pg2"><div class="field"><label>Nome da administradora</label><input placeholder="Ex: Administra Bem"/></div><div class="field"><label>CNPJ</label><input placeholder="00.000.000/0001-00"/></div><div class="field"><label>Telefone</label><input placeholder="(71) 3333-1111"/></div><div class="field"><label>Email</label><input placeholder="contato@adm.com.br"/></div><div class="field"><label>Responsável</label><input placeholder="Nome do gerente"/></div><div class="field"><label>WhatsApp do responsável</label><input placeholder="(71) 99999-0000"/></div></div><button class="btn bp" onclick="toast('Administradora salva','ok')">Salvar</button></div></div>
+        <div class="sp" id="sp-gestores"><div class="card cp"><div id="gest-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px"><div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end"><div class="field" style="margin:0"><label>Cargo</label><select><option>Síndico</option><option>Subsíndico</option><option>Presidente do Conselho</option><option>Conselheiro</option><option>Zelador</option><option>Porteiro</option></select></div><div class="field" style="margin:0"><label>Nome</label><input placeholder="Nome completo"/></div><button class="btn" style="min-height:44px;padding:0 12px" onclick="this.parentElement.remove()" aria-label="Remover"><i class="ti ti-trash" style="font-size:16px;color:var(--err)" aria-hidden="true"></i></button></div></div><div style="display:flex;gap:8px"><button class="btn" onclick="addGest()"><i class="ti ti-plus" aria-hidden="true"></i>Adicionar</button><button class="btn bp" onclick="toast('Gestores salvos','ok')">Salvar</button></div></div></div>
+        <div class="sp" id="sp-units"><div class="card cp"><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn bp"><i class="ti ti-upload" aria-hidden="true"></i>Importar planilha</button><button class="btn" onclick="addUnit()"><i class="ti ti-plus" aria-hidden="true"></i>Adicionar</button><button class="btn"><i class="ti ti-download" aria-hidden="true"></i>Modelo</button></div><div style="font-size:12px;color:var(--ink3);background:var(--bg);padding:8px 10px;border-radius:var(--r);margin-bottom:12px">Colunas: Unidade · Nome · CPF (opcional) · Telefone · Email</div><div style="overflow-x:auto"><table class="tbl" id="utm"><thead><tr><th>UNIDADE</th><th>NOME</th><th>CPF</th><th>TELEFONE</th><th>EMAIL</th><th></th></tr></thead><tbody id="utb"><tr><td>101</td><td>Ana Paula Silva</td><td>***.123-**</td><td>71 99111-1111</td><td>ana@email.com</td><td><button class="btn bs" onclick="this.closest('tr').remove()" aria-label="Remover"><i class="ti ti-trash" style="font-size:14px;color:var(--err)" aria-hidden="true"></i></button></td></tr><tr><td>102</td><td>Roberto Menezes</td><td>—</td><td>71 99222-2222</td><td>roberto@email.com</td><td><button class="btn bs" onclick="this.closest('tr').remove()" aria-label="Remover"><i class="ti ti-trash" style="font-size:14px;color:var(--err)" aria-hidden="true"></i></button></td></tr><tr><td>302</td><td>Carlos Silva</td><td>***.789-**</td><td>71 99333-3333</td><td>carlos@email.com</td><td><button class="btn bs" onclick="this.closest('tr').remove()" aria-label="Remover"><i class="ti ti-trash" style="font-size:14px;color:var(--err)" aria-hidden="true"></i></button></td></tr></tbody></table></div><button class="btn bp" style="margin-top:12px" onclick="toast('Moradores salvos','ok')">Salvar moradores</button></div></div>
+        <div class="sp" id="sp-reg"><div class="card cp"><div class="uzone" onclick="toast('Selecione o PDF do regimento')"><i class="ti ti-file-text" aria-hidden="true"></i><div class="uzone-t">Regimento Interno</div><div class="uzone-s">Formato PDF · A MYIA lerá e usará para gerar notificações</div></div><div class="uzone" onclick="toast('Selecione o PDF da convenção')"><i class="ti ti-file-text" aria-hidden="true"></i><div class="uzone-t">Convenção Condominial</div><div class="uzone-s">Formato PDF</div></div><button class="btn bm" onclick="toast('Documentos processados pela MYIA','ok')"><i class="ti ti-sparkles" aria-hidden="true"></i>Processar com MYIA</button></div></div>
+        <div class="sp" id="sp-orc"><div class="card cp"><div class="uzone" onclick="toast('Selecione a planilha de orçamento')"><i class="ti ti-table" aria-hidden="true"></i><div class="uzone-t">Orçamento Anual Aprovado</div><div class="uzone-s">.xlsx ou .csv · Colunas: Plano de contas · Verba mensal · Verba anual</div></div><div class="myia-b" style="margin-top:0"><div class="myia-h"><div class="myia-ic"><i class="ti ti-sparkles" aria-hidden="true"></i></div><span class="myia-lbl">Para que serve</span></div><div class="myia-txt">Com o orçamento carregado, a MYIA verifica a verba disponível antes de cada manutenção e alerta quando um gasto ultrapassa o previsto.</div></div><button class="btn bm" onclick="toast('Orçamento processado','ok')"><i class="ti ti-sparkles" aria-hidden="true"></i>Processar</button></div></div>
+      </div>
+
+      <!-- Perfil -->
+      <div class="cfg-p" id="cp-perfil"><div class="cfg-title">Meu perfil</div><div class="cfg-sub">Informações pessoais e de acesso</div><div class="card cp"><div class="pg2"><div class="field"><label>Nome</label><input value="Ana Paula Souza"/></div><div class="field"><label>Email</label><input value="ana@sindico.com.br"/></div><div class="field"><label>WhatsApp</label><input value="+55 71 99999-0000"/></div><div class="field"><label>Cidade</label><input value="Salvador, BA"/></div></div><button class="btn bp" onclick="toast('Perfil salvo','ok')">Salvar perfil</button></div></div>
+
+      <!-- Notificações -->
+      <div class="cfg-p" id="cp-notif"><div class="cfg-title">Notificações</div><div class="cfg-sub">Escolha quando ser notificado</div><div class="card cp"><div class="crow"><div><div class="clbl">Email não respondido em 2h</div><div class="csub">Lembrete automático</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">WhatsApp pendente</div><div class="csub">Após 1h sem resposta</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">Vencimento de despesa</div><div class="csub">3 dias antes</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">Manutenção próxima</div><div class="csub">7 dias antes</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">Resumo diário</div><div class="csub">Enviado às 08h</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div></div></div>
+
+      <!-- MYIA -->
+      <div class="cfg-p" id="cp-myia"><div class="cfg-title">MYIA</div><div class="cfg-sub">Configure a inteligência artificial</div><div class="card cp"><div class="crow"><div><div class="clbl">Tom de resposta</div></div><select style="border:1px solid var(--line);border-radius:var(--r);padding:8px 12px;font-size:14px;font-family:inherit;background:var(--s1)"><option>Formal</option><option selected>Profissional</option><option>Amigável</option></select></div><div class="crow"><div><div class="clbl">Sugerir respostas automaticamente</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">Classificar mensagens automaticamente</div></div><button class="toggle on" onclick="this.classList.toggle('on')" aria-label="toggle"></button></div><div class="crow"><div><div class="clbl">Crédito de IA mensal</div><div class="csub">Plano: 5.000 interações/mês</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:700;color:var(--ok)">3.240</div><div style="font-size:11px;color:var(--ink3)">restantes</div></div></div></div></div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════
+     MOBILE NAV
+═══════════════════════════════════════════ -->
+<nav class="mnav" aria-label="Navegação">
+  <div class="mni">
+    <a class="mni-i on" data-tab="painel" onclick="nav('painel',this)" tabindex="0"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Painel</span></a>
+    <a class="mni-i" data-tab="email" onclick="nav('email',this)" tabindex="0"><i class="ti ti-mail" aria-hidden="true"></i><span class="mni-b">4</span><span>Email</span></a>
+    <a class="mni-i" data-tab="wapp" onclick="nav('wapp',this)" tabindex="0"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i><span class="mni-b">5</span><span>WhatsApp</span></a>
+    <a class="mni-i" data-tab="ocorr" onclick="nav('ocorr',this)" tabindex="0"><i class="ti ti-alert-circle" aria-hidden="true"></i><span class="mni-b">2</span><span>Ocorr.</span></a>
+    <a class="mni-i" onclick="toggleMore()" tabindex="0"><i class="ti ti-dots" aria-hidden="true"></i><span>Mais</span></a>
+  </div>
+</nav>
+
+<div class="more-sh" id="more-sh" role="dialog" aria-label="Mais opções">
+  <div style="text-align:center;margin-bottom:10px"><div style="width:36px;height:4px;background:var(--line);border-radius:2px;display:inline-block"></div></div>
+  <div class="more-grid">
+    <div class="more-it" onclick="nav('agenda',null);closeMore()"><i class="ti ti-calendar" aria-hidden="true"></i><span>Agenda</span></div>
+    <div class="more-it" onclick="nav('informe',null);closeMore()"><i class="ti ti-speakerphone" aria-hidden="true"></i><span>Comunicados</span></div>
+    <div class="more-it" onclick="nav('assembleia',null);closeMore()"><i class="ti ti-users" aria-hidden="true"></i><span>Assembleias</span></div>
+    <div class="more-it" onclick="nav('manut',null);closeMore()"><i class="ti ti-tool" aria-hidden="true"></i><span>Manutenção</span></div>
+    <div class="more-it" onclick="nav('config',null);closeMore()"><i class="ti ti-settings" aria-hidden="true"></i><span>Config.</span></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- TASK MODAL (mobile-friendly bottom sheet) -->
+<div id="task-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;align-items:flex-end;justify-content:center" onclick="closeTaskModal(event)">
+  <div style="background:var(--s1);border-radius:var(--rl) var(--rl) 0 0;padding:20px 20px 32px;width:100%;max-width:600px;box-shadow:0 -8px 30px rgba(0,0,0,.12)" onclick="event.stopPropagation()">
+    <div style="width:36px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 16px"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px" id="tm-title">Notificação unid. 703 — aprovar</div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:20px" id="tm-sub">Ed. Aurora</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn bp" style="width:100%;justify-content:center;font-size:15px" onclick="toggleTaskFromModal();closeTaskModal(null)"><i class="ti ti-checkbox" aria-hidden="true"></i>Marcar como concluída</button>
+      <button class="btn" style="width:100%;justify-content:center;font-size:15px" onclick="nav('ocorr',document.querySelector('[data-tab=ocorr]'));closeTaskModal(null)"><i class="ti ti-arrow-right" aria-hidden="true"></i>Ver ocorrência relacionada</button>
+      <button class="btn" style="width:100%;justify-content:center;font-size:15px;color:var(--err);border-color:var(--err)" onclick="closeTaskModal(null)">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var TITLES={painel:'Bom dia, Ana 👋',email:'Email',wapp:'WhatsApp',agenda:'Agenda',ocorr:'Ocorrências',informe:'Comunicar moradores',assembleia:'Assembleias',manut:'Manutenção',config:'Configurações'};
+var _curTaskEl=null;
+
+/* ── NAVIGATION ── */
+function nav(id,el){
+  document.querySelectorAll('.view,.vflex').forEach(function(v){v.classList.remove('on')});
+  document.querySelectorAll('[data-tab]').forEach(function(r){r.classList.remove('on')});
+  var v=document.getElementById('v-'+id);
+  if(v) v.classList.add('on');
+  if(el) el.classList.add('on');
+  else{var r=document.querySelector('[data-tab="'+id+'"]');if(r)r.classList.add('on');}
+  document.getElementById('tb-title').textContent=TITLES[id]||id;
+  closeMore();
+}
+
+/* ── MORE SHEET ── */
+function toggleMore(){document.getElementById('more-sh').classList.toggle('open')}
+function closeMore(){document.getElementById('more-sh').classList.remove('open')}
+document.addEventListener('click',function(e){
+  var s=document.getElementById('more-sh');
+  if(s.classList.contains('open')&&!s.contains(e.target)&&!e.target.closest('[onclick*="toggleMore"]')) s.classList.remove('open');
+});
+
+/* ── TOAST ── */
+function toast(msg,type){
+  var c=document.getElementById('toasts');
+  var t=document.createElement('div');
+  t.className='toast'+(type==='ok'?' tok':type==='err'?' terr':'');
+  var ic=type==='ok'?'ti-circle-check':type==='err'?'ti-circle-x':'ti-info-circle';
+  t.innerHTML='<i class="ti '+ic+'" style="font-size:17px" aria-hidden="true"></i>'+msg;
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';t.style.transition='opacity .25s';setTimeout(function(){t.remove()},250)},3000);
+}
+
+/* ── CARTEIRA → CONFIG CONDOMÍNIO ── */
+function goCondConfig(nome,cor){
+  nav('config',document.querySelector('[data-tab=config]'));
+  showCfg('novo',document.getElementById('ci-novo'));
+  document.getElementById('cfg-cond-title').textContent=nome==='Novo'?'Novo condomínio':nome;
+  document.getElementById('cfg-cond-sub').textContent=nome==='Novo'?'Preencha os dados':'Editar configurações do condomínio';
+  var input=document.getElementById('cfg-cond-nome');
+  if(input&&nome!=='Novo') input.value=nome;
+  showSub('dados',document.getElementById('st-dados'));
+}
+
+/* ── EMAIL ── */
+function toggleEmail(id,row){
+  var d=document.getElementById(id);
+  var open=d.classList.contains('on');
+  document.querySelectorAll('.edet').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.row.click').forEach(function(x){x.style.background=''});
+  if(!open){d.classList.add('on');if(row)row.style.background='var(--bg)';}
+}
+function sendReply(btn){
+  btn.innerHTML='<i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i> Enviado';
+  btn.disabled=true;btn.style.background='var(--ok)';btn.style.borderColor='var(--ok)';
+  toast('Resposta enviada com sucesso','ok');
+}
+
+/* ── WHATSAPP ── */
+var WS={'Carlos Silva':'Sua encomenda está na portaria desde 13/05. Prazo: 5 dias.','Maria Oliveira':'Registramos. O 703 será notificado conforme art. 14.','José Santos':'Seu boleto foi enviado por email. Posso reenviar agora?','+55 71 99123-4567':'Olá! Poderia se identificar? Qual condomínio você é?','Carlos (irmão)':'Boa! Confirmo sim, abraço!'};
+function selWa(el,initials,name,unit,cond,msg,bg,color,sug,status){
+  document.querySelectorAll('.wc').forEach(function(i){i.classList.remove('on')});el.classList.add('on');
+  var av=document.getElementById('wh-av');av.textContent=initials;av.style.background=bg;av.style.color=color;
+  document.getElementById('wh-n').textContent=name;
+  document.getElementById('wh-s').textContent=(unit!=='—'?'Unid. '+unit+' · ':'')+cond;
+  document.getElementById('wa-m').innerHTML='<div class="bin">'+msg+'</div>';
+  document.getElementById('wa-sug').textContent='"'+(WS[name]||sug)+'"';
+  document.getElementById('wp-name').textContent=name;
+  document.getElementById('wp-sub').textContent=(unit!=='—'?'Unid. '+unit+' · ':'')+cond;
+  document.getElementById('wp-unit').textContent=unit;document.getElementById('wp-cd').textContent=cond;
+  document.getElementById('wp-sel-c').value=cond;document.getElementById('wp-sel-u').value=unit==='—'?'':unit;
+  var st=document.getElementById('wp-status');
+  if(status==='respondido'){st.textContent='Respondido';st.className='tag tg';}else{st.textContent='Pendente';st.className='tag tr';}
+}
+function sendSug(){
+  var t=document.getElementById('wa-sug').textContent.replace(/^"|"$/g,'');appendWa(t);toast('Enviado','ok');
+}
+function sendMsg(){var inp=document.getElementById('wa-in');if(!inp.value.trim())return;appendWa(inp.value);inp.value='';}
+function appendWa(txt){var m=document.getElementById('wa-m');var d=document.createElement('div');d.className='bout';d.textContent=txt;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function saveContact(){
+  var c=document.getElementById('wp-sel-c').value,u=document.getElementById('wp-sel-u').value;
+  document.getElementById('wp-sub').textContent=(u?'Unid. '+u+' · ':'')+c;
+  document.getElementById('wp-unit').textContent=u||'—';document.getElementById('wp-cd').textContent=c;
+  toast('Contato salvo: '+(u?'Unid. '+u+' — ':'')+c,'ok');
+}
+
+/* ── TASKS ── */
+function toggleTask(el){
+  var row=el.closest('.task');
+  el.classList.toggle('ok');
+  if(el.classList.contains('ok')){
+    el.innerHTML='<i class="ti ti-check" style="font-size:10px;color:#fff" aria-hidden="true"></i>';
+    el.setAttribute('aria-checked','true');row.classList.add('done');
+  } else {
+    el.innerHTML='';el.setAttribute('aria-checked','false');row.classList.remove('done');
+  }
+}
+function openTask(el){
+  _curTaskEl=el;
+  var t=el.querySelector('.task-t');var s=el.querySelector('[style*="color:var(--ink3)"]');
+  document.getElementById('tm-title').textContent=t?t.textContent:'Tarefa';
+  document.getElementById('tm-sub').textContent=s?s.textContent:'';
+  var modal=document.getElementById('task-modal');
+  modal.style.display='flex';
+}
+function closeTaskModal(ev){
+  if(!ev||ev.target===document.getElementById('task-modal'))
+    document.getElementById('task-modal').style.display='none';
+}
+function toggleTaskFromModal(){
+  if(!_curTaskEl)return;
+  var chk=_curTaskEl.querySelector('.chk');if(chk)toggleTask(chk);
+}
+function addTask(){
+  var txt=prompt('Nova tarefa:');if(!txt||!txt.trim())return;
+  var list=document.getElementById('task-list');
+  var d=document.createElement('div');d.className='task';
+  d.setAttribute('onclick','openTask(this)');
+  d.innerHTML='<div class="chk" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Concluir"></div><div style="flex:1;min-width:0"><div class="task-t" style="font-size:14px;font-weight:500">'+txt.trim()+'</div><div style="font-size:12px;color:var(--ink3);margin-top:3px">Criada agora</div></div>';
+  list.appendChild(d);
+}
+function addTaskFrom(title){
+  var list=document.getElementById('task-list');
+  var d=document.createElement('div');d.className='task';
+  d.setAttribute('onclick','openTask(this)');
+  d.innerHTML='<div class="chk" onclick="event.stopPropagation();toggleTask(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Concluir"></div><div style="flex:1;min-width:0"><div class="task-t" style="font-size:14px;font-weight:500">'+title+'</div><div style="font-size:12px;color:var(--ink3);margin-top:3px">Criada a partir de email</div></div>';
+  list.appendChild(d);toast('Tarefa criada','ok');
+}
+
+/* ── AGENDA ── */
+function toggleEv(el){
+  el.classList.toggle('done');
+  var txt=el.textContent.replace(/^✓\s*/,'');el.textContent=txt;
+}
+
+/* ── OCORRÊNCIAS ── */
+function toggleOcorr(el){
+  var block=el.querySelector('.myia-b');
+  var hint=el.querySelector('.oc-hint');
+  var icon=hint?hint.querySelector('i'):null;
+  if(!block)return;
+  var open=block.style.display==='block';
+  block.style.display=open?'none':'block';
+  if(icon)icon.className=open?'ti ti-chevron-down':'ti ti-chevron-up';
+}
+
+/* ── INFORMATIVOS ── */
+var ILG={'Ed. Mar Azul':'MA','Ed. Aurora':'EA','Parque Verde':'PV','Cond. Panamby':'CP','Todos':'MC'};
+function gerarInforme(){
+  var c=document.getElementById('inf-c').value;
+  var b=document.getElementById('inf-b').value;
+  if(!b.trim()){toast('Descreva a situação antes de gerar','err');return;}
+  document.getElementById('inf-logo').textContent=ILG[c]||'M';
+  document.getElementById('inf-cn').textContent=c;
+  document.getElementById('inf-dest').textContent=c;
+  document.getElementById('inf-prev').innerHTML='<strong>Prezados moradores,</strong><br><br>Informamos que '+b+'<br><br>Qualquer dúvida, entre em contato com a administração.<br><br><em>Atenciosamente,<br>Síndico — '+c+'</em>';
+  var a=document.getElementById('inf-acts');a.style.display='flex';a.style.flexDirection='column';
+  toast('Informativo gerado!','ok');
+}
+
+/* ── CONFIG ── */
+function showCfg(id,el){
+  document.querySelectorAll('.cfg-p').forEach(function(p){p.classList.remove('on')});
+  var p=document.getElementById('cp-'+id);if(p)p.classList.add('on');
+  document.querySelectorAll('.cfg-it').forEach(function(i){i.classList.remove('on')});
+  if(el)el.classList.add('on');
+}
+function showSub(id,el){
+  ['dados','adm','gestores','units','reg','orc'].forEach(function(s){
+    var p=document.getElementById('sp-'+s);if(p)p.classList.remove('on');
+    var b=document.getElementById('st-'+s);if(b)b.classList.remove('on');
+  });
+  var p=document.getElementById('sp-'+id);if(p)p.classList.add('on');
+  if(el)el.classList.add('on');
+}
+function addGest(){
+  var l=document.getElementById('gest-list');
+  var d=document.createElement('div');
+  d.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end';
+  d.innerHTML='<div class="field" style="margin:0"><label>Cargo</label><select><option>Síndico</option><option>Subsíndico</option><option>Presidente do Conselho</option><option>Conselheiro</option><option>Zelador</option><option>Porteiro</option></select></div><div class="field" style="margin:0"><label>Nome</label><input placeholder="Nome completo"/></div><button class="btn" style="min-height:44px;padding:0 12px" onclick="this.parentElement.remove()"><i class="ti ti-trash" style="font-size:16px;color:var(--err)" aria-hidden="true"></i></button>';
+  l.appendChild(d);
+}
+function addUnit(){
+  var t=document.getElementById('utb');
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input style="width:46px;border:1px solid var(--line);border-radius:5px;padding:5px 6px;font-size:13px" placeholder="Un."/></td><td><input style="width:110px;border:1px solid var(--line);border-radius:5px;padding:5px 6px;font-size:13px" placeholder="Nome"/></td><td><input style="width:78px;border:1px solid var(--line);border-radius:5px;padding:5px 6px;font-size:13px" placeholder="CPF"/></td><td><input style="width:88px;border:1px solid var(--line);border-radius:5px;padding:5px 6px;font-size:13px" placeholder="Tel."/></td><td><input style="width:118px;border:1px solid var(--line);border-radius:5px;padding:5px 6px;font-size:13px" placeholder="Email"/></td><td><button class="btn bs" onclick="this.closest(\'tr\').remove()" aria-label="Remover"><i class="ti ti-trash" style="font-size:14px;color:var(--err)" aria-hidden="true"></i></button></td>';
+  t.appendChild(tr);
+}
+
+/* ── KEYBOARD ACCESS ── */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeMore();document.getElementById('task-modal').style.display='none';}
+  if((e.key===' '||e.key==='Enter')&&e.target.classList.contains('chk')){e.preventDefault();toggleTask(e.target);}
+  if((e.key===' '||e.key==='Enter')&&e.target.classList.contains('stat')){e.preventDefault();e.target.click();}
+});
+</script>
+</body>
+</html>
